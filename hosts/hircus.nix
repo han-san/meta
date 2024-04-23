@@ -27,6 +27,7 @@ in {
 
   fileSystems."/" = { device = "/dev/sda1"; fsType = "btrfs"; options = [ "compress-force=zstd" ]; };
 
+  virtualisation.docker.enable = true;
 
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "22.05"; # Did you read the comment?
@@ -35,15 +36,12 @@ in {
   services.openssh.passwordAuthentication = false;
 
   users.users.pazuzu = {
-    description = "The symbol of balance.";
+    description = "Administrator account";
     extraGroups = [ "wheel" "docker" ];
     isNormalUser = true;
     openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDARnGYbUJkeo5NRINEpkgGT/LpeWGiKlL2oZeu21Or1EpC392cKz5jquz2PM7AkSVJqubMB0f6ZRVTVVDjyVgO7aHcCM4OomF031ORJq7uAHWOgUdkFtcs8Irb71xUnbU3u0L3KhlUTHTMaCULUccQmHX442Ao1spUjL0dOK5m2Eia5OTxkaWulilkYRWcGHPmTjumsyXhg5btgGnwVhAjRKS5sKei5cBgQwx6dCveYc06G0aDuS7PBpIFkT48lEh0sGPS8ijHU9E8urvFpHFPj/hFF9lsKKSwE8L8ASwuziN82TSIw/1xyEVe4IDXVBqfCMHCvZM3qFRJFy7VAnyX kng@hyperdrive"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIROYqN9O7ewlAYRMt1ROxxgKKfHOW31NJ06zCNaxwtn e@ukl_2021-11-04"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBoXPFt/ddFzJgHj2bAYRVfJ/FseIdASW2C26deW4ND2 e@arafel-2019-11-15"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDauQtPmqWaGQ4wB1kRa6tmPbTvfgfLWjP6rbsFjEij3 elit@1337book"
-    ];
+        "INSERT SSH KEYS HERE"
+        ];
   };
 
   age.secrets = let
@@ -86,7 +84,7 @@ in {
 
   # <3 Let's Encrypt
   security.acme.acceptTerms = true;
-  security.acme.defaults.email = "kngrektor@gmail.com";
+  security.acme.defaults.email = "styr@dalo.se";
 
   # Basic services
   services.postgresql.enable = true;
@@ -98,12 +96,6 @@ in {
     recommendedOptimisation = true;
     recommendedGzipSettings = true;
     recommendedProxySettings = true;
-    # When Nginx can't find any virtual host matching
-    # the host header it falls back to the "first" virtual host
-    virtualHosts."a".locations."/".extraConfig = ''
-      add_header Content-Type 'text/plain';
-      return 200 'Host doesnt match any virtual host';
-    '';
   };
 
   # S3 Block storage
@@ -150,7 +142,7 @@ in {
     enable = true;
     package = pkgs.nextcloud25;
     enableBrokenCiphersForSSE = false;
-    
+
     hostName = "files.${domain}";
     https = true;
     config = {
@@ -208,52 +200,32 @@ in {
     };
   };
 
-  # N8N
-  #services.n8n.enable = true;
-  #services.nginx.virtualHosts."n8n.${domain}" = {
-  #  enableACME = true;
-  #  forceSSL = true; 
-  #  locations."/".proxyPass = "http://localhost:5678";  
-  #};
-
-
-  services.nginx.virtualHosts."${domain}" = let
-    site = pkgs.stdenv.mkDerivation {
-      name = "jekyll-dalo.se";
-      nativeBuildInputs = with pkgs; [ jekyll ];
-      src = pkgs.fetchFromGitHub {
-        owner = "dalo-mdu";
-        repo = "site";
-        #rev = "f2e003d96b29375915dbc280c19840c7ee55c66c";
-        #hash = "sha256-aUdsdS4ImlYeah0oZ9nr3heR/ZwWZm2A3VZrYXHkgTs=";
-        #rev = "69f1eeb2713bbdee603b7cfbc3d4ed7da96b929e";
-        #hash = "sha256-RAlvYwxvh9RXFRp+BfWeq+nGKp7yZzpVuIKl56La8pM=";
-        #rev = "3cac2b763e153ef5f3abf4e41465562874c9e00b";
-        #hash = "sha256-ZGQIZKf+9aL/7OyD0pO/zTJe/mFv5k9j39uhP8EqMXk=";
-        #rev = "4bb8e8559a6a2dd39d494a0e604f10284290f297";
-        #hash = "sha256-GeQ7w2ub5zXJ3j3J7V5fhB5LAkTdpYGQSr7RAvvxV3A=";
-        rev = "31d4b7e280827e6231971df0cedcee16041c76c9";
-        hash = "sha256-HnNWrma2+OzRnw2heS0QylHmOlirhVjzPZhBy6c7zBs=";
+   virtualisation.oci-containers = {
+    backend = "docker";
+    containers = {
+      dalo = {
+        image = "ghcr.io/dalo-mdu/dalo.se:main";
+        ports = [ "3000:3000" ];
+        environment = {
+          NODE_ENV = "production";
+          PORT = "3000";
+          CONTACT_WEBHOOK_URL= "";
+        };
       };
-      installPhase = ''
-        mkdir "$out"
-        jekyll build -d "$out"
-      '';
     };
-  in {
+   };
+
+  
+
+  services.nginx.virtualHosts."${domain}" = {
     enableACME = true;
     addSSL = true;
-    locations."/".root = "${site}";
+    locations."/".proxyPass = "http://localhost:3000";
   };
-  services.nginx.virtualHosts."old.${domain}" = {
-    enableACME = true;
-    addSSL = true;
-    locations."/".return = "302 https://sites.google.com/site/daloget";
-  };
+  
   services.nginx.virtualHosts."www.${domain}" = {
     enableACME = true;
     addSSL = true;
     locations."/".return = "302 https://dalo.se";
   };
-
 }
