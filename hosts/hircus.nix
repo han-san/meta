@@ -39,9 +39,10 @@ in {
     description = "Administrator account";
     extraGroups = [ "wheel" "docker" ];
     isNormalUser = true;
+    # INSERT SSH KEYS HERE.
     openssh.authorizedKeys.keys = [
-        "INSERT SSH KEYS HERE"
-        ];
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGxlasMoSJCYmVmT3T8HLmWYqoUX+0NO5gM5xaiRYto7 johan@hansan-desktop" # Nisse
+    ];
   };
 
   age.secrets = let
