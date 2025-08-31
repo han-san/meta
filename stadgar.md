@@ -128,22 +128,26 @@ upplösande.
 
 **Tidpunkt och kallelse:**
 
-Årsmötet som är föreningens högsta beslutande organ, hålls 1:a veckan i
-februari på tid och plats som styrelsen bestämmer.
+Årsmötet, som är föreningens högsta beslutande organ, ska hållas senast
+den sista oktober.
 
-Kallelse till årsmötet skall av styrelsen senast tre veckor före mötet
-tillställas medlemmarna.
+För att mötet ska vara giltigt måste föreningens medlemmar meddelas
+minst tre veckor i förväg. Medlemmarna ska få veta tid och plats för
+mötet.
 
-Har förslag om stadgeändring, upplösning eller sammanslagning av
-föreningen med annan förening eller annan fråga av väsentlig betydelse
-för föreningen eller dess medlemmar, skall det anges i kallelsen.
+Om det finns särskilda skäl kan årsmötet hållas senare än den sista
+oktober, under förutsättning att medlemmarna godkänner det.
 
 **Förslag till ärende att behandlas av årsmötet:**
 
-Såväl medlem som styrelsen får avge motion att behandlas av årsmötet.
+Såväl medlemmar som styrelsen får avge en eller flera motioner att
+behandlas av årsmötet.
 
-Förslag från medlem skall vara styrelsen tillhandla senast fyra veckor
-före årsmötet.
+Förslag från medlem ska vara styrelsen tillhanda senast två veckor före
+årsmötet.
+
+För att mötet ska vara giltigt ska medlemmar meddelas med
+möteshandlingar, motioner och dagordning, senast en vecka före årsmötet.
 
 **Rösträtt samt yttrande- och förslagsrätt på årsmötet:**
 
